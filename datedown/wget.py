@@ -25,9 +25,10 @@ Interface to wget command line utility.
 '''
 
 import subprocess
+import os
 
 
-def download(url, store_at, username=None, password=None, cookie_file=None):
+def download(url, target, username=None, password=None, cookie_file=None):
     """
     Download a url using wget.
     Retry as often as necessary and store cookies if
@@ -37,8 +38,8 @@ def download(url, store_at, username=None, password=None, cookie_file=None):
     ----------
     url: string
         URL to download
-    store_at: string
-        path on local filesystem where to store the results
+    target: string
+        path on local filesystem where to store the downloaded file
     username: string, optional
         username
     password: string, optional
@@ -48,9 +49,12 @@ def download(url, store_at, username=None, password=None, cookie_file=None):
     """
     cmd_list = ['wget',
                 url,
-                '-r',
-                '-P', store_at,
+                '-O', target,
                 '--retry-connrefused']
+
+    target_path = os.path.split(target)[0]
+    if not os.path.exists(target_path):
+        os.makedirs(target_path)
 
     if username is not None:
         cmd_list.append('--user={}'.format(username))
@@ -63,3 +67,25 @@ def download(url, store_at, username=None, password=None, cookie_file=None):
             '--keep-session-cookies']
 
     subprocess.call(cmd_list)
+
+
+def map_download(url_target, username=None, password=None, cookie_file=None):
+    """
+    variant of the function that only takes one argument.
+    Otherwise map_async of the multiprocessing module can not work with the function.
+
+    Parameters
+    ----------
+    url_target: list
+        first element the url, second the target string
+    username: string, optional
+        username
+    password: string, optional
+        password
+    cookie_file: string, optional
+        file where to store cookies
+    """
+    download(url_target[0], url_target[1],
+             username=username,
+             password=password,
+             cookie_file=cookie_file)
