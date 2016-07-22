@@ -30,7 +30,12 @@ import os
 from functools import partial
 
 import datedown.wget as wget
-from itertools import izip as zip
+try:
+    # Python 2
+    from itertools import izip as zip
+except ImportError:
+    # Python 3
+    pass
 
 
 def download(urls, targets, num_proc=1, username=None, password=None):
