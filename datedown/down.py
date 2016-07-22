@@ -81,12 +81,16 @@ def check_downloaded(urls, targets):
 
     Returns
     -------
-    not_downloaded: list
-        list of files that do not exist locally
+    not_urls: list
+        list of urls that do not exist locally
+    not_fnames: list
+        list of filenames that do not exist locally
     """
-    not_downloaded = []
+    not_urls = []
+    not_fnames = []
     for url, target in zip(urls, targets):
         if not os.path.exists(target):
-            not_downloaded.append(url)
+            not_urls.append(url)
+            not_fnames.append(target)
 
-    return not_downloaded
+    return not_urls, not_fnames

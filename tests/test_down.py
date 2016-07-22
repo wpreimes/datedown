@@ -60,5 +60,6 @@ def test_download(targets):
             "http://landsat-pds.s3.amazonaws.com/L8/139/045/LC81390452014295LGN00/LC81390452014295LGN00_MTL.txt"]
 
     download(urls, targets)
-    not_downloaded = check_downloaded(urls, targets)
-    assert len(not_downloaded) == 0
+    not_urls, not_fnames = check_downloaded(urls, targets)
+    assert len(not_urls) == 0
+    assert len(not_fnames) == 0
