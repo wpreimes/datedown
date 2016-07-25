@@ -121,7 +121,10 @@ def test_parse_args():
             "--urlsubdirs", "%Y", "%m",
             "--localfname=local.txt",
             "--localsubdirs", "%m", "%d",
-            "--interval=5H"]
+            "--interval=5H",
+            "--username=test",
+            "--password=test",
+            "--n_proc=4"]
     a = parse_args(args)
     assert a.start == datetime(2007, 1, 1)
     assert a.end == datetime(2007, 1, 10, 10, 11)
@@ -132,6 +135,9 @@ def test_parse_args():
     assert a.localfname == 'local.txt'
     assert a.localsubdirs == ['%m', '%d']
     assert a.interval == 5
+    assert a.username == "test"
+    assert a.password == "test"
+    assert a.n_proc == 4
 
 
 def test_parse_args_single_subdirs():
@@ -153,6 +159,9 @@ def test_parse_args_single_subdirs():
     assert a.localfname == 'local.txt'
     assert a.localsubdirs == ['%m']
     assert a.interval == 5
+    assert a.n_proc == 1
+    assert a.username == None
+    assert a.password == None
 
 
 def test_parse_args_defaults():
@@ -171,6 +180,9 @@ def test_parse_args_defaults():
     assert a.localfname == 'file.txt'
     assert a.localsubdirs == ['%Y']
     assert a.interval == 24
+    assert a.n_proc == 1
+    assert a.username == None
+    assert a.password == None
 
 
 def test_main(output_path, temp_http_server):

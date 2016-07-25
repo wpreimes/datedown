@@ -126,6 +126,12 @@ def parse_args(args):
     parser.add_argument("--interval", type=n_hours, default='1D',
                         help=('Interval of datetimes between the start and end. '
                               'Supported types are e.g. 6H for 6 hourly or 2D for 2 daily.'))
+    parser.add_argument("--username",
+                        help='Username to use for download.')
+    parser.add_argument("--password",
+                        help='password to use for download.')
+    parser.add_argument("--n_proc", default=1, type=int,
+                        help='Number of parallel processes to use for downloading.')
     args = parser.parse_args(args)
     # set defaults that can not be handled by argparse
     if args.localfname is None:
@@ -143,8 +149,12 @@ def main(args):
                             fname=args.urlfname, subdirs=args.urlsubdirs)
     fname_create_fn = partial(create_dt_fpath, root=args.localroot,
                               fname=args.localfname, subdirs=args.localsubdirs)
+    down_func = partial(download,
+                        num_proc=args.n_proc,
+                        username=args.username,
+                        password=args.password)
     download_by_dt(dts, url_create_fn,
-                   fname_create_fn, download)
+                   fname_create_fn, down_func)
 
 
 def run():
