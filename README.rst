@@ -26,7 +26,39 @@ Installation
 Usage
 =====
 
-Coming.
+The program can be used either as a library to be called from other Python
+programs or as a stand alone command line program.
+
+Use as a command line program
+-----------------------------
+
+After installation the ``datedown`` program should be available in your shell. To get detailed instructions on how to use it run ``datedown -h``.
+
+Example
+~~~~~~~
+
+.. code::
+
+    datedown 2000-01-01 2000-01-02 http://localhost:8888 file_%Y_%m_%d.txt /home/cpa/ --urlsubdirs test_data year_month_subfolders %Y %m
+
+This would download the files
+
+* http://localhost:8888/test_data/year_month_subfolders/2000/01/file_2000_01_01.txt
+* http://localhost:8888/test_data/year_month_subfolders/2000/01/file_2000_01_02.txt
+
+to
+
+* /home/cpa/test_data/year_month_subfolders/2000/01/file_2000_01_01.txt
+* /home/cpa/test_data/year_month_subfolders/2000/01/file_2000_01_02.txt
+
+Use as a library
+----------------
+
+For use as a library the most important function is
+:func:`datedown.interface.download_by_dt` or :func:`datedown.down.download`. The
+first function takes functions that produce urls from Python datetime objects
+whereas the second takes lists of urls and local filenames. Please see the
+API Documentation for more details about these functions.
 
 Note
 ====
