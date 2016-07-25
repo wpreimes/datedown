@@ -26,7 +26,12 @@ Interface for the package.
 
 from datetime import datetime
 from datedown.down import check_downloaded
+from datedown.dates import n_hourly
+from datedown.urlcreator import create_dt_url
+from datedown.fname_creator import create_dt_fpath
+from datedown.down import download
 import warnings
+from functools import partial
 import sys
 import argparse
 
@@ -132,6 +137,14 @@ def parse_args(args):
 
 def main(args):
     args = parse_args(args)
+
+    dts = list(n_hourly(args.start, args.end, args.interval))
+    url_create_fn = partial(create_dt_url, root=args.urlroot,
+                            fname=args.urlfname, subdirs=args.urlsubdirs)
+    fname_create_fn = partial(create_dt_fpath, root=args.localroot,
+                              fname=args.localfname, subdirs=args.localsubdirs)
+    download_by_dt(dts, url_create_fn,
+                   fname_create_fn, download)
 
 
 def run():
