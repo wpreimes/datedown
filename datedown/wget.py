@@ -28,7 +28,8 @@ import subprocess
 import os
 
 
-def download(url, target, username=None, password=None, cookie_file=None):
+def download(url, target, username=None, password=None, cookie_file=None,
+             recursive=False):
     """
     Download a url using wget.
     Retry as often as necessary and store cookies if
@@ -46,11 +47,20 @@ def download(url, target, username=None, password=None, cookie_file=None):
         password
     cookie_file: string, optional
         file where to store cookies
+    recursive: boolean, optional
+        If set then no exact filenames can be given.
+        The data will then be downloaded recursively and stored in the target folder.
     """
     cmd_list = ['wget',
                 url,
-                '-O', target,
                 '--retry-connrefused']
+
+    if recursive:
+        cmd_list = cmd_list + ['-P', target]
+        cmd_list = cmd_list + ['-nd']
+        cmd_list = cmd_list + ['-r']
+    else:
+        cmd_list = cmd_list + ['-O', target]
 
     target_path = os.path.split(target)[0]
     if not os.path.exists(target_path):
@@ -69,7 +79,8 @@ def download(url, target, username=None, password=None, cookie_file=None):
     subprocess.call(cmd_list)
 
 
-def map_download(url_target, username=None, password=None, cookie_file=None):
+def map_download(url_target, username=None, password=None, cookie_file=None,
+                 recursive=False):
     """
     variant of the function that only takes one argument.
     Otherwise map_async of the multiprocessing module can not work with the function.
@@ -84,8 +95,12 @@ def map_download(url_target, username=None, password=None, cookie_file=None):
         password
     cookie_file: string, optional
         file where to store cookies
+    recursive: boolean, optional
+        If set then no exact filenames can be given.
+        The data will then be downloaded recursively and stored in the target folder.
     """
     download(url_target[0], url_target[1],
              username=username,
              password=password,
-             cookie_file=cookie_file)
+             cookie_file=cookie_file,
+             recursive=recursive)

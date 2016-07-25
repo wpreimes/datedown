@@ -38,7 +38,7 @@ import argparse
 
 def download_by_dt(dts, url_create_fn,
                    fpath_create_fn, download_fn,
-                   passes=3):
+                   passes=3, recursive=False):
     """
     Download data for datetimes. If files are missing try
     again passes times.
@@ -57,15 +57,23 @@ def download_by_dt(dts, url_create_fn,
         Takes two arguments (url_list, fname_list)
     passes: int, optional
         if files are missing then try again passes times
+    recursive: boolean, optional
+        If set then no exact filenames can be given.
+        The data will then be downloaded recursively and stored in the target folder.
+        No checking of downloaded files is possible in this case.
     """
     urls = map(url_create_fn, dts)
     fnames = map(fpath_create_fn, dts)
     for p in range(passes):
         download_fn(urls, fnames)
-        no_urls, no_fnames = check_downloaded(urls, fnames)
-        urls = no_urls
-        fnames = no_fnames
-        if len(no_urls) == 0:
+        if not recursive:
+            no_urls, no_fnames = check_downloaded(urls, fnames)
+            urls = no_urls
+            fnames = no_fnames
+            if len(no_urls) == 0:
+                break
+        else:
+            urls = []
             break
 
     if len(urls) != 0:
@@ -159,3 +167,67 @@ def main(args):
 
 def run():
     main(sys.argv[1:])
+
+
+def parse_args_recursive(args):
+    """
+    Parse command line parameters for recursive download
+
+    :param args: command line parameters as list of strings
+    :return: command line parameters as :obj:`argparse.Namespace`
+    """
+    parser = argparse.ArgumentParser(
+        description="Download data recursively in parallel using wget. Based on datetimes.")
+    parser.add_argument("start", type=mkdate,
+                        help="Startdate. Either in format YYYY-MM-DD or YYYY-MM-DDTHH:MM.")
+    parser.add_argument("end", type=mkdate,
+                        help="Enddate. Either in format YYYY-MM-DD or YYYY-MM-DDTHH:MM.")
+    parser.add_argument("urlroot",
+                        help='Root of URL of the remote dataset.')
+    parser.add_argument("localroot",
+                        help='Root of local filesystem.')
+    parser.add_argument("--urlsubdirs", nargs='+',
+                        help=('Subdirectories to put between urlroot and urlfname.'
+                              'This can be a list of directories that can contain date string templates.'
+                              'e.g. --urlsubdirs %%Y %%m would look for files in urlroot/YYYY/MM/urlfname.'))
+    parser.add_argument("--localsubdirs", nargs='+',
+                        help=('Subdirectories to put between localroot and localfname.'
+                              'This can be a list of directories that can contain date string templates.'
+                              'e.g. --localsubdirs %%Y %%m would look for files in localroot/YYYY/MM/localfname.'
+                              'If not given then the urlsubdirs are used.'))
+    parser.add_argument("--interval", type=n_hours, default='1D',
+                        help=('Interval of datetimes between the start and end. '
+                              'Supported types are e.g. 6H for 6 hourly or 2D for 2 daily.'))
+    parser.add_argument("--username",
+                        help='Username to use for download.')
+    parser.add_argument("--password",
+                        help='password to use for download.')
+    parser.add_argument("--n_proc", default=1, type=int,
+                        help='Number of parallel processes to use for downloading.')
+    args = parser.parse_args(args)
+    # set defaults that can not be handled by argparse
+    if args.localsubdirs is None:
+        args.localsubdirs = args.urlsubdirs
+    return args
+
+
+def main_recursive(args):
+    args = parse_args_recursive(args)
+
+    dts = list(n_hourly(args.start, args.end, args.interval))
+    url_create_fn = partial(create_dt_url, root=args.urlroot,
+                            fname='', subdirs=args.urlsubdirs)
+    fname_create_fn = partial(create_dt_fpath, root=args.localroot,
+                              fname='', subdirs=args.localsubdirs)
+    down_func = partial(download,
+                        num_proc=args.n_proc,
+                        username=args.username,
+                        password=args.password,
+                        recursive=True)
+    download_by_dt(dts, url_create_fn,
+                   fname_create_fn, down_func,
+                   recursive=True)
+
+
+def run_recursive():
+    main_recursive(sys.argv[1:])

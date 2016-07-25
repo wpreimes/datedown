@@ -38,6 +38,7 @@ from datedown.interface import download_by_dt
 from datedown.interface import n_hours
 from datedown.interface import parse_args
 from datedown.interface import main
+from datedown.interface import main_recursive
 from datedown.down import download
 
 from subprocess import Popen
@@ -193,6 +194,24 @@ def test_main(output_path, temp_http_server):
             "--urlsubdirs", "test_data", "year_month_subfolders", '%Y', '%m']
 
     main(args)
+
+    fnames_should = [os.path.join(output_path, "test_data",
+                                  "year_month_subfolders", '2000', '01',
+                                  'file_2000_01_01.txt'),
+                     os.path.join(output_path, "test_data",
+                                  "year_month_subfolders", '2000', '01',
+                                  'file_2000_01_02.txt')]
+    for fname_should in fnames_should:
+        assert os.path.exists(fname_should)
+
+
+def test_main_recursive(output_path, temp_http_server):
+    args = ["2000-01-01", "2000-01-02",
+            "http://localhost:8888",
+            output_path,
+            "--urlsubdirs", "test_data", "year_month_subfolders", '%Y', '%m']
+
+    main_recursive(args)
 
     fnames_should = [os.path.join(output_path, "test_data",
                                   "year_month_subfolders", '2000', '01',

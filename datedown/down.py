@@ -38,7 +38,8 @@ except ImportError:
     pass
 
 
-def download(urls, targets, num_proc=1, username=None, password=None):
+def download(urls, targets, num_proc=1, username=None, password=None,
+             recursive=False):
     """
     Download the urls and store them at the target filenames.
 
@@ -54,6 +55,9 @@ def download(urls, targets, num_proc=1, username=None, password=None):
         Username to use for login
     password: string, optional
         Password to use for login
+    recursive: boolean, optional
+        If set then no exact filenames can be given.
+        The data will then be downloaded recursively and stored in the target folder.
     """
     p = Pool(num_proc)
     # partial function for Pool.map
@@ -61,7 +65,8 @@ def download(urls, targets, num_proc=1, username=None, password=None):
     dlfunc = partial(wget.map_download,
                      username=username,
                      password=password,
-                     cookie_file=cookie_file.name)
+                     cookie_file=cookie_file.name,
+                     recursive=recursive)
 
     p.map_async(dlfunc, zip(urls, targets)).get(9999999)
     cookie_file.close()
