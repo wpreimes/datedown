@@ -64,7 +64,7 @@ Use as a library
 ----------------
 
 For use as a library the most important function is
-:func:`datedown.interface.download_by_dt` or :func:`datedown.down.download`. The
+:py:func:`datedown.interface.download_by_dt` or :py:func:`datedown.down.download`. The
 first function takes functions that produce urls from Python datetime objects
 whereas the second takes lists of urls and local filenames. Please see the
 API Documentation for more details about these functions.
