@@ -25,6 +25,7 @@ Interface for the package.
 '''
 
 from datedown.down import check_downloaded
+import warnings
 
 
 def download_by_dt(dts, url_create_fn,
@@ -59,3 +60,7 @@ def download_by_dt(dts, url_create_fn,
         else:
             urls = no_urls
             fnames = no_fnames
+
+    if len(urls) != 0:
+        warnings.warn("Not all URL's were downloaded.")
+        warnings.warn("\n".join(urls))
