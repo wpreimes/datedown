@@ -112,19 +112,19 @@ def parse_args(args):
     parser.add_argument("localroot",
                         help='Root of local filesystem.')
     parser.add_argument("--urlsubdirs", nargs='+',
-                        help=('Subdirectories to put between urlroot and urlfname.',
-                              'This can be a list of directories that can contain date string templates.',
-                              'e.g. --urlsubdirs %Y %m would look for files in urlroot/YYYY/MM/urlfname.'))
+                        help=('Subdirectories to put between urlroot and urlfname.'
+                              'This can be a list of directories that can contain date string templates.'
+                              'e.g. --urlsubdirs %%Y %%m would look for files in urlroot/YYYY/MM/urlfname.'))
     parser.add_argument("--localfname",
-                        help=('Filenames of the local dataset. ',
+                        help=('Filenames of the local dataset. '
                               'If not given the filenames of the remote dataset are used.'))
     parser.add_argument("--localsubdirs", nargs='+',
-                        help=('Subdirectories to put between localroot and localfname.',
-                              'This can be a list of directories that can contain date string templates.',
-                              'e.g. --localsubdirs %Y %m would look for files in localroot/YYYY/MM/localfname.',
+                        help=('Subdirectories to put between localroot and localfname.'
+                              'This can be a list of directories that can contain date string templates.'
+                              'e.g. --localsubdirs %%Y %%m would look for files in localroot/YYYY/MM/localfname.'
                               'If not given then the urlsubdirs are used.'))
     parser.add_argument("--interval", type=n_hours, default='1D',
-                        help=('Interval of datetimes between the start and end. ',
+                        help=('Interval of datetimes between the start and end. '
                               'Supported types are e.g. 6H for 6 hourly or 2D for 2 daily.'))
     args = parser.parse_args(args)
     # set defaults that can not be handled by argparse
