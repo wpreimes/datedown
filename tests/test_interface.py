@@ -34,6 +34,8 @@ import shutil
 from datedown.urlcreator import create_dt_url
 from datedown.fname_creator import create_dt_fpath
 from datedown.interface import download_by_dt
+from datedown.interface import n_hours
+from datedown.interface import parse_args
 from datedown.down import download
 
 from subprocess import Popen
@@ -88,3 +90,41 @@ def test_interface(output_path, temp_http_server):
     fnames_should = map(fname_create_fn, dts)
     for fname_should in fnames_should:
         assert os.path.exists(fname_should)
+
+
+def test_n_hours():
+    st = "6H"
+    assert 6 == n_hours(st)
+    st = "6h"
+    assert 6 == n_hours(st)
+    st = "8H"
+    assert 8 == n_hours(st)
+    st = "18H"
+    assert 18 == n_hours(st)
+    st = "2D"
+    assert 48 == n_hours(st)
+    st = "2d"
+    assert 48 == n_hours(st)
+    st = "1D"
+    assert 24 == n_hours(st)
+
+
+def test_parse_args():
+    args = ["2007-01-01", "2007-01-10T10:11",
+            "http://localhost:8888",
+            "file.txt",
+            "/root/files",
+            "--urlsubdirs", "%Y", "%m",
+            "--localfname=local.txt",
+            "--localsubdirs", "%m", "%d",
+            "--interval=5H"]
+    a = parse_args(args)
+    assert a.start == datetime(2007, 1, 1)
+    assert a.end == datetime(2007, 1, 10, 10, 11)
+    assert a.urlroot == "http://localhost:8888"
+    assert a.urlfname == "file.txt"
+    assert a.localroot == "/root/files"
+    assert a.urlsubdirs == ['%Y', '%m']
+    assert a.localfname == 'local.txt'
+    assert a.localsubdirs == ['%m', '%d']
+    assert a.interval == 5
