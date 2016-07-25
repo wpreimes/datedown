@@ -2,6 +2,15 @@
 datedown
 ========
 
+.. image:: https://travis-ci.org/cpaulik/datedown.svg?branch=master
+    :target: https://travis-ci.org/cpaulik/datedown
+
+.. image:: https://coveralls.io/repos/github/cpaulik/datedown/badge.svg?branch=master
+   :target: https://coveralls.io/github/cpaulik/datedown?branch=master
+
+.. image:: https://badge.fury.io/py/datedown.svg
+    :target: http://badge.fury.io/py/datedown
+
 Small library to download files with date and time based filenames or folder
 structures. In parallel using wget.
 
@@ -59,6 +68,11 @@ For use as a library the most important function is
 first function takes functions that produce urls from Python datetime objects
 whereas the second takes lists of urls and local filenames. Please see the
 API Documentation for more details about these functions.
+
+|Documentation Status|
+
+.. |Documentation Status| image:: https://readthedocs.org/projects/datedown/badge/?version=latest
+   :target: http://datedown.readthedocs.org/
 
 Note
 ====
