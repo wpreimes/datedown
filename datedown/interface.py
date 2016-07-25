@@ -121,7 +121,13 @@ def parse_args(args):
     parser.add_argument("--interval", type=n_hours, default='1D',
                         help=('Interval of datetimes between the start and end. ',
                               'Supported types are e.g. 6H for 6 hourly or 2D for 2 daily.'))
-    return parser.parse_args(args)
+    args = parser.parse_args(args)
+    # set defaults that can not be handled by argparse
+    if args.localfname is None:
+        args.localfname = args.urlfname
+    if args.localsubdirs is None:
+        args.localsubdirs = args.urlsubdirs
+    return args
 
 
 def main(args):

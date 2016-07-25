@@ -131,3 +131,42 @@ def test_parse_args():
     assert a.localfname == 'local.txt'
     assert a.localsubdirs == ['%m', '%d']
     assert a.interval == 5
+
+
+def test_parse_args_single_subdirs():
+    args = ["2007-01-01", "2007-01-10T10:11",
+            "http://localhost:8888",
+            "file.txt",
+            "/root/files",
+            "--urlsubdirs", "%Y",
+            "--localfname=local.txt",
+            "--localsubdirs", "%m",
+            "--interval=5H"]
+    a = parse_args(args)
+    assert a.start == datetime(2007, 1, 1)
+    assert a.end == datetime(2007, 1, 10, 10, 11)
+    assert a.urlroot == "http://localhost:8888"
+    assert a.urlfname == "file.txt"
+    assert a.localroot == "/root/files"
+    assert a.urlsubdirs == ['%Y']
+    assert a.localfname == 'local.txt'
+    assert a.localsubdirs == ['%m']
+    assert a.interval == 5
+
+
+def test_parse_args_defaults():
+    args = ["2007-01-01", "2007-01-10T10:11",
+            "http://localhost:8888",
+            "file.txt",
+            "/root/files",
+            "--urlsubdirs", "%Y"]
+    a = parse_args(args)
+    assert a.start == datetime(2007, 1, 1)
+    assert a.end == datetime(2007, 1, 10, 10, 11)
+    assert a.urlroot == "http://localhost:8888"
+    assert a.urlfname == "file.txt"
+    assert a.localroot == "/root/files"
+    assert a.urlsubdirs == ['%Y']
+    assert a.localfname == 'file.txt'
+    assert a.localsubdirs == ['%Y']
+    assert a.interval == 24
