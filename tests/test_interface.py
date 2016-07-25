@@ -28,6 +28,7 @@ We host the test_data directory during the test.
 
 from datetime import datetime
 from functools import partial
+import sys
 import os
 import shutil
 
@@ -46,7 +47,9 @@ import pytest
 def temp_http_server(request):
     pdir = os.getcwd()
     os.chdir(os.path.dirname(__file__))
-    p = Popen(["python", "-m", "SimpleHTTPServer", "8888"])
+    modules = {2: "SimpleHTTPServer",
+               3: "http.server"}
+    p = Popen(["python", "-m", modules[sys.version_info.major], "8888"])
     os.chdir(pdir)
 
     def func():

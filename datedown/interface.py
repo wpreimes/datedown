@@ -58,11 +58,10 @@ def download_by_dt(dts, url_create_fn,
     for p in range(passes):
         download_fn(urls, fnames)
         no_urls, no_fnames = check_downloaded(urls, fnames)
+        urls = no_urls
+        fnames = no_fnames
         if len(no_urls) == 0:
             break
-        else:
-            urls = no_urls
-            fnames = no_fnames
 
     if len(urls) != 0:
         warnings.warn("Not all URL's were downloaded.")
