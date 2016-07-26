@@ -41,7 +41,11 @@ programs or as a stand alone command line program.
 Use as a command line program
 -----------------------------
 
-After installation the ``datedown`` program should be available in your shell. To get detailed instructions on how to use it run ``datedown -h``.
+After installation the ``datedown`` program should be available in your shell.
+To get detailed instructions on how to use it run ``datedown -h``.
+
+If it is impossible to know the exact filename on the server then also a
+recursive version of the script is available under the name ``datedown_rec``.
 
 Example
 ~~~~~~~
@@ -59,6 +63,7 @@ to
 
 * /home/cpa/test_data/year_month_subfolders/2000/01/file_2000_01_01.txt
 * /home/cpa/test_data/year_month_subfolders/2000/01/file_2000_01_02.txt
+
 
 Use as a library
 ----------------
