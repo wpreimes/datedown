@@ -58,6 +58,7 @@ def download(url, target, username=None, password=None, cookie_file=None,
     if recursive:
         cmd_list = cmd_list + ['-P', target]
         cmd_list = cmd_list + ['-nd']
+        cmd_list = cmd_list + ['-np']
         cmd_list = cmd_list + ['-r']
     else:
         cmd_list = cmd_list + ['-O', target]
