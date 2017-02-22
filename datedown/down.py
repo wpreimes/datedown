@@ -39,7 +39,7 @@ except ImportError:
 
 
 def download(urls, targets, num_proc=1, username=None, password=None,
-             recursive=False):
+             recursive=False, filetypes=None):
     """
     Download the urls and store them at the target filenames.
 
@@ -58,6 +58,8 @@ def download(urls, targets, num_proc=1, username=None, password=None,
     recursive: boolean, optional
         If set then no exact filenames can be given.
         The data will then be downloaded recursively and stored in the target folder.
+    filetypes: list, optional
+        list of file extension to download, any others will no be downloaded
     """
     p = Pool(num_proc)
     # partial function for Pool.map
@@ -66,7 +68,8 @@ def download(urls, targets, num_proc=1, username=None, password=None,
                      username=username,
                      password=password,
                      cookie_file=cookie_file.name,
-                     recursive=recursive)
+                     recursive=recursive,
+                     filetypes=filetypes)
 
     p.map_async(dlfunc, zip(urls, targets)).get(9999999)
     cookie_file.close()

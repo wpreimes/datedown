@@ -29,7 +29,7 @@ import os
 
 
 def download(url, target, username=None, password=None, cookie_file=None,
-             recursive=False):
+             recursive=False, filetypes=None):
     """
     Download a url using wget.
     Retry as often as necessary and store cookies if
@@ -50,6 +50,8 @@ def download(url, target, username=None, password=None, cookie_file=None,
     recursive: boolean, optional
         If set then no exact filenames can be given.
         The data will then be downloaded recursively and stored in the target folder.
+    filetypes: list, optional
+        list of file extension to download, any others will no be downloaded
     """
     cmd_list = ['wget',
                 url,
@@ -62,6 +64,9 @@ def download(url, target, username=None, password=None, cookie_file=None,
         cmd_list = cmd_list + ['-r']
     else:
         cmd_list = cmd_list + ['-O', target]
+
+    if filetypes is not None:
+        cmd_list = cmd_list + ['-A ' + ','.join(filetypes)]
 
     target_path = os.path.split(target)[0]
     if not os.path.exists(target_path):
@@ -77,11 +82,11 @@ def download(url, target, username=None, password=None, cookie_file=None,
             '--save-cookies', cookie_file,
             '--keep-session-cookies']
 
-    subprocess.call(cmd_list)
+    subprocess.call(" ".join(cmd_list), shell=True)
 
 
 def map_download(url_target, username=None, password=None, cookie_file=None,
-                 recursive=False):
+                 recursive=False, filetypes=None):
     """
     variant of the function that only takes one argument.
     Otherwise map_async of the multiprocessing module can not work with the function.
@@ -99,9 +104,12 @@ def map_download(url_target, username=None, password=None, cookie_file=None,
     recursive: boolean, optional
         If set then no exact filenames can be given.
         The data will then be downloaded recursively and stored in the target folder.
+    filetypes: list, optional
+        list of file extension to download, any others will no be downloaded
     """
     download(url_target[0], url_target[1],
              username=username,
              password=password,
              cookie_file=cookie_file,
-             recursive=recursive)
+             recursive=recursive,
+             filetypes=filetypes)

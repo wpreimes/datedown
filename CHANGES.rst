@@ -6,6 +6,7 @@ Version 0.3
 ===========
 
 - Add no parents to wget in recursive mode
+- Add possibility to only download certain filetypes.
 
 Version 0.2
 ===========
