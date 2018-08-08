@@ -29,7 +29,7 @@ import os
 
 
 def download(url, target, username=None, password=None, cookie_file=None,
-             recursive=False, filetypes=None):
+             recursive=False, filetypes=None, robots=True):
     """
     Download a url using wget.
     Retry as often as necessary and store cookies if
@@ -52,6 +52,8 @@ def download(url, target, username=None, password=None, cookie_file=None,
         The data will then be downloaded recursively and stored in the target folder.
     filetypes: list, optional
         list of file extension to download, any others will no be downloaded
+    robots : bool
+        If False, wget -e robots is set to off when downloading recursively.
     """
     cmd_list = ['wget',
                 url,
@@ -64,6 +66,9 @@ def download(url, target, username=None, password=None, cookie_file=None,
         cmd_list = cmd_list + ['-r']
     else:
         cmd_list = cmd_list + ['-O', target]
+
+    if not robots:
+        cmd_list = cmd_list + ['-e' 'robots=off']
 
     if filetypes is not None:
         cmd_list = cmd_list + ['-A ' + ','.join(filetypes)]
@@ -86,7 +91,7 @@ def download(url, target, username=None, password=None, cookie_file=None,
 
 
 def map_download(url_target, username=None, password=None, cookie_file=None,
-                 recursive=False, filetypes=None):
+                 recursive=False, filetypes=None, robots=True):
     """
     variant of the function that only takes one argument.
     Otherwise map_async of the multiprocessing module can not work with the function.
@@ -106,10 +111,13 @@ def map_download(url_target, username=None, password=None, cookie_file=None,
         The data will then be downloaded recursively and stored in the target folder.
     filetypes: list, optional
         list of file extension to download, any others will no be downloaded
+    robots : bool
+        If False, wget -e robots is set to off when downloading recursively.
     """
     download(url_target[0], url_target[1],
              username=username,
              password=password,
              cookie_file=cookie_file,
              recursive=recursive,
-             filetypes=filetypes)
+             filetypes=filetypes,
+             robots=robots)
